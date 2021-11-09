@@ -1,3 +1,5 @@
+console.log(localStorage.getItem('panier'));
+
 //Je récupère l'URL de la page produit
 var str = window.location.href;
 
@@ -6,15 +8,13 @@ var url = new URL(str);
 
 //Je récupère la valeur de l'ID dans contenu dans l'URL
 var articleId = url.searchParams.get("id");
+console.log("ID = " + articleId);
 
 //Je vais chercher les données produits liées à l'ID
 async function getOneProduct() {
   return (
     fetch(`http://localhost:3000/api/products/${articleId}`)
       .then((res) => res.json())
-      /*.then((res) => {
-      console.log(res);
-    })*/
       .catch((err) => console.log("Erreur: " + err))
   );
 }
@@ -24,7 +24,7 @@ async function getOneProduct() {
 //
 function insertArticle(article) {
   //
-  //Inserttion de l'image
+  //Insertion de l'image
   const $itemImageContainer = document.querySelector(".item__img");
   const $itemImage = document.createElement("img");
   $itemImage.setAttribute("src", `${article.imageUrl}`);
@@ -66,7 +66,6 @@ async function main() {
 
 main();
 
-
 //
 //Partie ajout au panier
 //
@@ -79,7 +78,7 @@ main();
 // -Si même ID + même couleur alors incrémenter la quantité
 // -Sinon créer une nouvelle instance et l'insérer au tableau
 
-const articlesInCart = [];
+/*const articlesInCart = [];
 
 localStorage.setItem('tableau', JSON.stringify(articlesInCart))
 
@@ -105,7 +104,110 @@ function retrieveData() {
 
 const $addToCart = document.getElementById('addToCart');
 
-$addToCart.addEventListener('click', retrieveData())
+$addToCart.addEventListener('click', retrieveData())*/
 
+//Création du panier et envoi vers localStorage
+//const panier = [];
+//localStorage.setItem("panier", JSON.stringify(panier));
 
+//Sélection de l'id "quantité" du formulaire
+const $articleQuantity = document.getElementById("quantity");
 
+//Sélection de l'id "couleur" du formulaire
+const $colorsList = document.getElementById("colors");
+
+//Sélection du bouton add to cart
+const $addToCartBtn = document.getElementById("addToCart");
+
+//Ecouter le bouton et envoyer le panier
+$addToCartBtn.addEventListener("click", function (e) {
+  //Mettre le choix de l'utilisateur dans une variable
+  const quantityChoice = $articleQuantity.value;
+
+  //Mettre le choix de l'utilisateur dans une variable
+  const colorChoice = $colorsList.value;
+
+  //Si le panier n'existe pas encore, on le créé
+  if (localStorage.getItem('panier') === null) {
+    const panier = [];
+    localStorage.setItem('panier', JSON.stringify(panier));
+  }
+
+  //Création
+  let articleSelected = {
+    id: articleId,
+    color: colorChoice,
+    quantity: quantityChoice,
+  };
+
+  /*let articleExemple = {
+    id: "034707184e8e4eefb46400b5a3774b5f",
+    color: "Red",
+    quantity: "3",
+  };*/
+
+  //On récupère le panier
+  const panierRaw = localStorage.getItem("panier");
+
+  //On convertit le panier en tableau javascript
+  const panierClean = JSON.parse(panierRaw);
+  console.log(panierClean);
+
+  //Juste pour le test
+  //panierClean.push(articleExemple);
+
+ // console.log(panierClean);
+
+  //On recherche dans le panier un élément ayant le même ID et la même couleur que l'objet sélectionné
+  const recherche = panierClean.find(
+    (article) => article.id === articleId && article.color === colorChoice
+  );
+  console.log(recherche);
+
+  //Si on a pas trouvé l'élément, on rajoute un objet dans les tableau
+  if (recherche === undefined) {
+    console.log("Introuvable!");
+    //Si il n'y a pas de quantité ou pas de couleur, on ne traite pas l'ajout au panier
+    if (articleSelected.color === "" || articleSelected.quantity === "0") {
+      console.log("Veuillez sélectionner une couleur et une quantité");
+    }
+    //Si quantité et couleur sont conformes, on ajoute le nouvel élément au panier
+    else {
+      panierClean.push(articleSelected);
+      console.log(panierClean);
+
+      //On supprime l'ancien panier au niveau du LocalStorage
+      localStorage.removeItem('panier');
+
+      //On envoie le nouveau panier dans le localStorage
+      localStorage.setItem("panier", JSON.stringify(panierClean));
+      console.log(localStorage.getItem('panier'));
+    }
+  }
+  //Si on a trouvé l'article, on met à jour la quantité
+  else {
+    console.log("trouvé!");
+    //Si il n'y a pas de quantité ou pas de couleur, on ne traite pas l'ajout au panier
+    if (articleSelected.color === "" || articleSelected.quantity === "0") {
+      console.log("Veuillez sélectionner une couleur et une quantité");
+    } else {
+      //On met à jour la quantité
+      articleSelected.quantity = (
+        parseInt(articleSelected.quantity, 10) +
+        parseInt(recherche.quantity, 10)
+      ).toString();
+      //En fusionnant, on remplace l'ancienne quantité de l'article par la nouvelle
+      Object.assign(recherche, articleSelected);
+      console.log(panierClean);
+
+      //On supprime l'ancien panier au niveau du LocalStorage
+      localStorage.removeItem('panier');
+
+      //On envoie le nouveau panier dans le localStorage
+      localStorage.setItem("panier", JSON.stringify(panierClean));
+      console.log(localStorage.getItem('panier'));
+    }
+  }
+});
+
+//localStorage.clear();
