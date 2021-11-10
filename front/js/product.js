@@ -1,4 +1,4 @@
-console.log(localStorage.getItem('panier'));
+console.log(localStorage.getItem("panier"));
 
 //Je récupère l'URL de la page produit
 var str = window.location.href;
@@ -12,11 +12,9 @@ console.log("ID = " + articleId);
 
 //Je vais chercher les données produits liées à l'ID
 async function getOneProduct() {
-  return (
-    fetch(`http://localhost:3000/api/products/${articleId}`)
-      .then((res) => res.json())
-      .catch((err) => console.log("Erreur: " + err))
-  );
+  return fetch(`http://localhost:3000/api/products/${articleId}`)
+    .then((res) => res.json())
+    .catch((err) => console.log("Erreur: " + err));
 }
 
 //
@@ -128,9 +126,9 @@ $addToCartBtn.addEventListener("click", function (e) {
   const colorChoice = $colorsList.value;
 
   //Si le panier n'existe pas encore, on le créé
-  if (localStorage.getItem('panier') === null) {
+  if (localStorage.getItem("panier") === null) {
     const panier = [];
-    localStorage.setItem('panier', JSON.stringify(panier));
+    localStorage.setItem("panier", JSON.stringify(panier));
   }
 
   //Création
@@ -156,7 +154,7 @@ $addToCartBtn.addEventListener("click", function (e) {
   //Juste pour le test
   //panierClean.push(articleExemple);
 
- // console.log(panierClean);
+  // console.log(panierClean);
 
   //On recherche dans le panier un élément ayant le même ID et la même couleur que l'objet sélectionné
   const recherche = panierClean.find(
@@ -177,11 +175,11 @@ $addToCartBtn.addEventListener("click", function (e) {
       console.log(panierClean);
 
       //On supprime l'ancien panier au niveau du LocalStorage
-      localStorage.removeItem('panier');
+      localStorage.removeItem("panier");
 
       //On envoie le nouveau panier dans le localStorage
       localStorage.setItem("panier", JSON.stringify(panierClean));
-      console.log(localStorage.getItem('panier'));
+      console.log(localStorage.getItem("panier"));
     }
   }
   //Si on a trouvé l'article, on met à jour la quantité
@@ -201,11 +199,11 @@ $addToCartBtn.addEventListener("click", function (e) {
       console.log(panierClean);
 
       //On supprime l'ancien panier au niveau du LocalStorage
-      localStorage.removeItem('panier');
+      localStorage.removeItem("panier");
 
       //On envoie le nouveau panier dans le localStorage
       localStorage.setItem("panier", JSON.stringify(panierClean));
-      console.log(localStorage.getItem('panier'));
+      console.log(localStorage.getItem("panier"));
     }
   }
 });
