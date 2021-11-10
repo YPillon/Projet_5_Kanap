@@ -16,6 +16,8 @@ async function getOneProduct(articleId) {
 //Je crée une fonction insérant les donnée dans la page panier
 function insertArticleInCart(article) {
   console.log(articleInCart.id);
+  console.log(articleInCart.color);
+  console.log(articleInCart.quantity);
 
   //Je sélectionne le conteneur des produits
   const $articlesContainer = document.getElementById("cart__items");
@@ -128,5 +130,8 @@ async function main() {
 //et les insérer dans la page
 //
 for (var articleInCart of panierClean) {
+  console.log(articleInCart.id);
+  console.log(articleInCart.color);
+  console.log(articleInCart.quantity);
   main();
 }
