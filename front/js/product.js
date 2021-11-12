@@ -1,4 +1,4 @@
-console.log(localStorage.getItem("panier"));
+console.log(localStorage.getItem('panier'));
 
 //Je récupère l'URL de la page produit
 var str = window.location.href;
@@ -12,9 +12,11 @@ console.log("ID = " + articleId);
 
 //Je vais chercher les données produits liées à l'ID
 async function getOneProduct() {
-  return fetch(`http://localhost:3000/api/products/${articleId}`)
-    .then((res) => res.json())
-    .catch((err) => console.log("Erreur: " + err));
+  return (
+    fetch(`http://localhost:3000/api/products/${articleId}`)
+      .then((res) => res.json())
+      .catch((err) => console.log("Erreur: " + err))
+  );
 }
 
 //
@@ -68,46 +70,6 @@ main();
 //Partie ajout au panier
 //
 
-// On veut=
-// - créer une classe articleInCart
-// - Au clic du bouton
-// -récuperer l'id, la quantité et la couleur
-// -Envoyer ça à localStorage
-// -Si même ID + même couleur alors incrémenter la quantité
-// -Sinon créer une nouvelle instance et l'insérer au tableau
-
-/*const articlesInCart = [];
-
-localStorage.setItem('tableau', JSON.stringify(articlesInCart))
-
-class articleInCart {
-    constructor(id, quantity, color) {
-        this.id = id;
-        this.quantity = quantity;
-        this.color = color;
-    }
-}
-
-const $quantity = document.getElementById('quantity');
-const $color = document.querySelector('#colors > option');
-
-function retrieveData() {
-    let article = new articleInCart(articleId, $quantity.value, $color.value);
-
-    let $arrayInLocalStorageRaw = localStorage.get('tableau');
-    let $arrayInLocalStorageClean = JSON.parse($arrayInLocalStorageRaw);
-
-
-}
-
-const $addToCart = document.getElementById('addToCart');
-
-$addToCart.addEventListener('click', retrieveData())*/
-
-//Création du panier et envoi vers localStorage
-//const panier = [];
-//localStorage.setItem("panier", JSON.stringify(panier));
-
 //Sélection de l'id "quantité" du formulaire
 const $articleQuantity = document.getElementById("quantity");
 
@@ -117,6 +79,7 @@ const $colorsList = document.getElementById("colors");
 //Sélection du bouton add to cart
 const $addToCartBtn = document.getElementById("addToCart");
 
+//
 //Ecouter le bouton et envoyer le panier
 $addToCartBtn.addEventListener("click", function (e) {
   //Mettre le choix de l'utilisateur dans une variable
@@ -126,23 +89,17 @@ $addToCartBtn.addEventListener("click", function (e) {
   const colorChoice = $colorsList.value;
 
   //Si le panier n'existe pas encore, on le créé
-  if (localStorage.getItem("panier") === null) {
+  if (localStorage.getItem('panier') === null) {
     const panier = [];
-    localStorage.setItem("panier", JSON.stringify(panier));
+    localStorage.setItem('panier', JSON.stringify(panier));
   }
 
-  //Création
+  //Création de l'objet correspondant au choix de la couleur et quantité
   let articleSelected = {
     id: articleId,
     color: colorChoice,
     quantity: quantityChoice,
   };
-
-  /*let articleExemple = {
-    id: "034707184e8e4eefb46400b5a3774b5f",
-    color: "Red",
-    quantity: "3",
-  };*/
 
   //On récupère le panier
   const panierRaw = localStorage.getItem("panier");
@@ -150,11 +107,6 @@ $addToCartBtn.addEventListener("click", function (e) {
   //On convertit le panier en tableau javascript
   const panierClean = JSON.parse(panierRaw);
   console.log(panierClean);
-
-  //Juste pour le test
-  //panierClean.push(articleExemple);
-
-  // console.log(panierClean);
 
   //On recherche dans le panier un élément ayant le même ID et la même couleur que l'objet sélectionné
   const recherche = panierClean.find(
@@ -175,11 +127,11 @@ $addToCartBtn.addEventListener("click", function (e) {
       console.log(panierClean);
 
       //On supprime l'ancien panier au niveau du LocalStorage
-      localStorage.removeItem("panier");
+      localStorage.removeItem('panier');
 
       //On envoie le nouveau panier dans le localStorage
       localStorage.setItem("panier", JSON.stringify(panierClean));
-      console.log(localStorage.getItem("panier"));
+      console.log(localStorage.getItem('panier'));
     }
   }
   //Si on a trouvé l'article, on met à jour la quantité
@@ -199,11 +151,11 @@ $addToCartBtn.addEventListener("click", function (e) {
       console.log(panierClean);
 
       //On supprime l'ancien panier au niveau du LocalStorage
-      localStorage.removeItem("panier");
+      localStorage.removeItem('panier');
 
       //On envoie le nouveau panier dans le localStorage
       localStorage.setItem("panier", JSON.stringify(panierClean));
-      console.log(localStorage.getItem("panier"));
+      console.log(localStorage.getItem('panier'));
     }
   }
 });
