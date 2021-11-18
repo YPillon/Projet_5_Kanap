@@ -1,3 +1,5 @@
+//----------------------------Partie affichage et gestion du panier--------------------------//
+
 //On récupère le panier
 const panierRaw = localStorage.getItem("panier");
 
@@ -16,127 +18,9 @@ async function getOneProduct(articleId) {
 
 //
 //
-//Fonction mettant à jour la quantité d'un produit dans le panier
-function updateValue(e) {
-  //On récupère la nouvelle valeur
-  const newQuantity = e.target.value;
-
-  //Si la nouvelle valeur est comprise entre 1 et 100, on met à jour la quantité
-  if (e.target.value > 0 && e.target.value < 101) {
-    //On sélectionne le noeud parent possédant "data-id" et "data-color"
-    const produit = e.target.closest(".cart__item");
-    //console.log(produit);
-
-    //On récupère l'id et la couleur
-    const idToUpdate = produit.dataset.id;
-    const colorToUpdate = produit.dataset.color;
-
-    //On récupère le panier et on le parse
-    const panierToUpdate = JSON.parse(localStorage.getItem("panier"));
-    //console.log(panierToUpdate);
-
-    //On recherche dans le panier un élément ayant le même ID et la même couleur que l'objet sélectionné
-    const recherche = panierToUpdate.find(
-      (article) => article.id === idToUpdate && article.color === colorToUpdate
-    );
-    //console.log(recherche);
-
-    //On crée un objet représentant la nouvelle valeur
-    let newQuantityValue = {
-      quantity: newQuantity,
-    };
-
-    //On fusionne les anciennes données du produit avec la nouvelle quantité
-    nouveauProduit = Object.assign(recherche, newQuantityValue);
-    //console.log(nouveauProduit);
-    //console.log(panierToUpdate);
-
-    //On supprime l'ancien panier au niveau du LocalStorage
-    localStorage.removeItem("panier");
-
-    //On envoie le nouveau panier dans le localStorage
-    localStorage.setItem("panier", JSON.stringify(panierToUpdate));
-    console.log(localStorage.getItem("panier"));
-  }
-  //Exceptions
-  //
-  //Si la quantité choisie est inférieure à 1
-  if (e.target.value < 1) {
-    //On affiche le message suivant
-    alert("Veuillez choisir une quantité entre 1 et 100");
-    //On ramène la valeur à 1
-    e.target.value = 1;
-    //On rappelle la fonction à l'intérieur d'elle-même
-    updateValue(e);
-  }
-  //Si la quantité choisie est supérieure à 100
-  if (e.target.value > 100) {
-    //On affiche le message suivant
-    alert("Veuillez choisir une quantité entre 1 et 100");
-    //On ramène la valeur à 1
-    e.target.value = 100;
-    //On rappelle la fonction à l'intérieur d'elle-même
-    updateValue(e);
-  }
-
-  //On recalcule le prix total
-  calculatePrice();
-
-  //On recalcule la quantité totale
-  calculateItemsQuantity();
-}
-
-//
-//
-//Fonction supprimant un article
-function deleteItem(e) {
-  //On sélectionne le noeud parent possédant "data-id" et "data-color"
-  const produit = e.target.closest(".cart__item");
-  //console.log(produit);
-
-  //On récupère l'id et la couleur
-  const idToDelete = produit.dataset.id;
-  const colorToDelete = produit.dataset.color;
-
-  //On récupère le panier et on le parse
-  const panierToUpdate = JSON.parse(localStorage.getItem("panier"));
-  //console.log(panierToUpdate);
-
-  //On recherche dans le panier l'index d' l'élément ayant le même ID et la même couleur que l'objet sélectionné
-  const indexToDelete = panierToUpdate.findIndex(
-    (article) => article.id === idToDelete && article.color === colorToDelete
-  );
-  //console.log("recherche index: " + indexToDelete);
-
-  //On supprime l'élément
-  panierToUpdate.splice(indexToDelete, 1);
-  //console.log(panierToUpdate);
-
-  //On supprime l'ancien panier au niveau du LocalStorage
-  localStorage.removeItem("panier");
-
-  //On envoie le nouveau panier dans le localStorage
-  localStorage.setItem("panier", JSON.stringify(panierToUpdate));
-  //console.log(localStorage.getItem("panier"));
-
-  //On sélectionne le conteneur des produits dans le DOM
-  const $articlesContainer = document.getElementById("cart__items");
-
-  //On supprime le produit dans le DOM
-  $articlesContainer.removeChild(produit);
-
-  //On recalcule le prix total
-  calculatePrice();
-
-  //On recalcule la quantité totale
-  calculateItemsQuantity();
-}
-
-//
-//
-//Je crée une fonction insérant les données dans la page panier
+//Fonction insérant les données dans la page panier
 function insertArticleInCart(article, articlePanier) {
-  //Je sélectionne le conteneur des produits
+  //On sélectionne le conteneur des produits
   const $articlesContainer = document.getElementById("cart__items");
 
   //Création des éléments
@@ -236,7 +120,121 @@ function insertArticleInCart(article, articlePanier) {
 
 //
 //
+//Fonction mettant à jour la quantité d'un produit dans le panier
+function updateValue(e) {
+  //On récupère la nouvelle valeur
+  const newQuantity = e.target.value;
 
+  //Si la nouvelle valeur est comprise entre 1 et 100, on met à jour la quantité
+  if (e.target.value > 0 && e.target.value < 101) {
+    //On sélectionne le noeud parent possédant "data-id" et "data-color"
+    const produit = e.target.closest(".cart__item");
+
+    //On récupère l'id et la couleur
+    const idToUpdate = produit.dataset.id;
+    const colorToUpdate = produit.dataset.color;
+
+    //On récupère le panier et on le parse
+    const panierToUpdate = JSON.parse(localStorage.getItem("panier"));
+
+    //On recherche dans le panier un élément ayant le même ID et la même couleur que l'objet sélectionné
+    const recherche = panierToUpdate.find(
+      (article) => article.id === idToUpdate && article.color === colorToUpdate
+    );
+
+    //On crée un objet représentant la nouvelle valeur
+    let newQuantityValue = {
+      quantity: newQuantity,
+    };
+
+    //On fusionne les anciennes données du produit avec la nouvelle quantité
+    nouveauProduit = Object.assign(recherche, newQuantityValue);
+
+    //On supprime l'ancien panier au niveau du LocalStorage
+    localStorage.removeItem("panier");
+
+    //On envoie le nouveau panier dans le localStorage
+    localStorage.setItem("panier", JSON.stringify(panierToUpdate));
+    console.log(localStorage.getItem("panier"));
+  }
+  //
+  //Exceptions
+  //
+  //Si la quantité choisie est inférieure à 1
+  if (e.target.value < 1) {
+    //On affiche le message suivant
+    alert("Veuillez choisir une quantité entre 1 et 100");
+    //On ramène la valeur à 1
+    e.target.value = 1;
+    //On rappelle la fonction à l'intérieur d'elle-même pour que le nombre total d'article
+    //et le prix soient mis à jour
+    updateValue(e);
+  }
+  //Si la quantité choisie est supérieure à 100
+  if (e.target.value > 100) {
+    //On affiche le message suivant
+    alert("Vous ne pouvez pas commander plus de 100 articles de cette couleur");
+    //On ramène la valeur à 100
+    e.target.value = 100;
+    //On rappelle la fonction à l'intérieur d'elle-même pour que le nombre total d'article
+    //et le prix soient mis à jour
+    updateValue(e);
+  }
+
+  //On recalcule le prix total
+  calculatePrice();
+
+  //On recalcule la quantité totale
+  calculateItemsQuantity();
+}
+
+//
+//
+//Fonction supprimant un article
+function deleteItem(e) {
+  //On sélectionne le noeud parent possédant "data-id" et "data-color"
+  const produit = e.target.closest(".cart__item");
+  //console.log(produit);
+
+  //On récupère l'id et la couleur
+  const idToDelete = produit.dataset.id;
+  const colorToDelete = produit.dataset.color;
+
+  //On récupère le panier et on le parse
+  const panierToUpdate = JSON.parse(localStorage.getItem("panier"));
+  //console.log(panierToUpdate);
+
+  //On recherche dans le panier l'index d' l'élément ayant le même ID et la même couleur que l'objet sélectionné
+  const indexToDelete = panierToUpdate.findIndex(
+    (article) => article.id === idToDelete && article.color === colorToDelete
+  );
+  //console.log("recherche index: " + indexToDelete);
+
+  //On supprime l'élément
+  panierToUpdate.splice(indexToDelete, 1);
+  //console.log(panierToUpdate);
+
+  //On supprime l'ancien panier au niveau du LocalStorage
+  localStorage.removeItem("panier");
+
+  //On envoie le nouveau panier dans le localStorage
+  localStorage.setItem("panier", JSON.stringify(panierToUpdate));
+  //console.log(localStorage.getItem("panier"));
+
+  //On sélectionne le conteneur des produits dans le DOM
+  const $articlesContainer = document.getElementById("cart__items");
+
+  //On supprime le produit dans le DOM
+  $articlesContainer.removeChild(produit);
+
+  //On recalcule le prix total
+  calculatePrice();
+
+  //On recalcule la quantité totale
+  calculateItemsQuantity();
+}
+
+//
 //
 //Fonction compilant la récupération des données du produit et leur insertion dans la page
 async function main(articleInCart) {
@@ -262,7 +260,6 @@ for (var articleInCart of panierClean) {
 async function calculatePrice() {
   //On récupère le panier et on le parse
   const panier = JSON.parse(localStorage.getItem("panier"));
-  //console.log(panier);
 
   //On initialise la variable qui comptabilisera tous les prix
   let allArticlesPrice = 0;
@@ -271,19 +268,15 @@ async function calculatePrice() {
   for (let item of panier) {
     //On récupère les données de l'article via l'API
     const articleData = await getOneProduct(item.id);
-    //console.log(articleData);
 
     //On récupère le prix de l'article
     var articlePrice = articleData.price;
 
     //On multiplie le prix de l'article par sa quantité
     var articleTotalPrice = articlePrice * item.quantity;
-    //console.log(item.quantity);
-    //console.log(articleTotalPrice);
 
     //On additionne la valeur au prix total de tous les articles
     allArticlesPrice += articleTotalPrice;
-    //console.log(allArticlesPrice);
   }
   //On sélectionne l'élément correspondant au prix total dans le DOM et on y affecte la valeur
   const $totalPrice = document.getElementById("totalPrice");
@@ -296,14 +289,12 @@ async function calculatePrice() {
 function calculateItemsQuantity() {
   //On récupère le panier et on le parse
   const panier = JSON.parse(localStorage.getItem("panier"));
-  //console.log(panier);
 
   //On initialise la variable qui comptabilisera le nombre total d'articles
   let allArticlesQuantity = 0;
 
   for (let item of panier) {
     allArticlesQuantity += parseInt(item.quantity, 10);
-    //console.log(allArticlesQuantity);
   }
   //On sélectionne l'élément correspondant au nombre total d'articles dans le DOM
   const $totalNumberOfArticles = document.getElementById("totalQuantity");
@@ -315,12 +306,14 @@ calculateItemsQuantity();
 
 //--------------------------------Gestion du formulaire--------------------------------//
 
-//Regex
 //
+//
+//Regex
 
 //On sélectionne le bouton du formulaire
 const $orderBtn = document.getElementById("order");
 
+//
 //Fonction testant la validité du prénom et du nom
 function isNameValid(name) {
   return /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g.test(name);
@@ -354,6 +347,7 @@ $lastNameInput.addEventListener("change", function (e) {
   }
 });
 
+//
 //Fonction testant la validité de l'adresse
 function isAddressValid(address) {
   return /(\d{1,}) [a-zA-Z0-9\s]+(\.)? [a-zA-Z]+(\,)?/g.test(address);
@@ -374,6 +368,7 @@ $addressInput.addEventListener("change", function (e) {
   }
 });
 
+//
 //Fonction testant la validité de la ville
 function isCityValid(city) {
   return /([a-zA-Z'\s]){1,}/g.test(city);
@@ -394,7 +389,8 @@ $cityInput.addEventListener("change", function (e) {
   }
 });
 
-//Fonction vérifiant si l'email est valide
+//
+//Fonction vérifiant la validité de l'email
 function isEmailValid(email) {
   return /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(
     email
@@ -433,7 +429,7 @@ function createContact() {
 
 //
 //
-//Fonction créant le tableau de produits
+//Fonction créant le tableau de produits à envoyer
 function putCartInAnArray() {
   //On récupère le panier et on le parse
   const panier = JSON.parse(localStorage.getItem("panier"));
@@ -451,7 +447,7 @@ function putCartInAnArray() {
 //
 //
 //Fonction envoyant les données à l'API
-async function postFormData(objet) {
+function postFormData(objet) {
   console.log(objet);
   return fetch("http://localhost:3000/api/products/order", {
     method: "POST",
@@ -469,12 +465,6 @@ async function postFormData(objet) {
     .catch((err) => console.log("Erreur: " + err));
 }
 
-//Fonction récupérant la réponse de l'API
-async function getResponse(objet) {
-  const response = await postFormData(objet);
-  console.log(response);
-}
-
 //Au clic sur le bouton "commander!" on déclenche le code suivant
 $orderBtn.addEventListener("click", function (e) {
   e.preventDefault();
@@ -488,7 +478,8 @@ $orderBtn.addEventListener("click", function (e) {
   ) {
     alert("Veuillez remplir tous les champs du formulaire");
   }
-  //Si un message d'erreur est affiché, on empêche le formulaire d'être envoyé
+  //Si un message d'erreur est affiché en-dessous d'un champ, 
+  //on empêche le formulaire d'être envoyé
   if (
     document.getElementById("firstNameErrorMsg").innerText != "" ||
     document.getElementById("lastNameErrorMsg").innerText != "" ||
@@ -496,7 +487,9 @@ $orderBtn.addEventListener("click", function (e) {
     document.getElementById("cityErrorMsg").innerText != "" ||
     document.getElementById("emailErrorMsg").innerText != ""
   ) {
-    alert("Veuillez remplir tous les champs du formulaire");
+    alert(
+      "Veuillez remplir les champs du formulaire en suivant les instructions"
+    );
   }
   //Si tout est rempli correctement, on envoie le formulaire à l'API
   if (
@@ -525,7 +518,7 @@ $orderBtn.addEventListener("click", function (e) {
       products,
     };
 
-    //On poste la requête
-    getResponse(aEnvoyer);
+    //On poste la requête et on récupère la réponse
+    postFormData(aEnvoyer);
   }
 });
