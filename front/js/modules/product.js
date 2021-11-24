@@ -1,52 +1,51 @@
 import { articleId } from "../product.js";
 
-//Création d'une fonction qui va récuérer les données produits liées à l'ID
+/**
+ * Cherche les données du produit dont
+ * l'ID est dans l'url de la page
+ * @returns { Promise } Objet contenant les données de l'article
+ */
 export async function getOneProduct() {
-    return fetch(`http://localhost:3000/api/products/${articleId}`)
-      .then((res) => res.json())
-      .catch((err) => console.log("Erreur: " + err));
-  }
+  return fetch(`http://localhost:3000/api/products/${articleId}`)
+    .then((res) => res.json())
+    .catch((err) => console.log("Erreur: " + err));
+}
 
-  //
-//
-//Fonction insérant les éléments du produit par rapport aux données récupérées
+/**
+ * Crée une vignette à partir des données produit
+ * @param { Object } article
+ */
 export function insertArticle(article) {
-    //
-    //Insertion de l'image
-    const $itemImageContainer = document.querySelector(".item__img");
-    const $itemImage = document.createElement("img");
-    $itemImage.setAttribute("src", `${article.imageUrl}`);
-    $itemImage.setAttribute("alt", `${article.altTxt}`);
-    $itemImageContainer.appendChild($itemImage);
-  
-    //Insertion du titre
-    const $itemTitle = document.getElementById("title");
-    $itemTitle.textContent = article.name;
-  
-    //Insertion du prix
-    const $itemPrice = document.getElementById("price");
-    $itemPrice.textContent = article.price;
-  
-    //Insertion de la description
-    const $itemDescription = document.getElementById("description");
-    $itemDescription.textContent = article.description;
-  
-    //Insertion des couleurs dans le menu déroulant
-    const $colorsList = document.getElementById("colors");
-  
-    for (let color of article.colors) {
-      const $itemColor = document.createElement("option");
-      $itemColor.setAttribute("value", `${color}`);
-      $itemColor.textContent = color;
-  
-      $colorsList.appendChild($itemColor);
-    }
-  }
+  const $itemImageContainer = document.querySelector(".item__img");
+  const $itemImage = document.createElement("img");
+  $itemImage.setAttribute("src", `${article.imageUrl}`);
+  $itemImage.setAttribute("alt", `${article.altTxt}`);
+  $itemImageContainer.appendChild($itemImage);
 
-  export async function main() {
-    const articleData = await getOneProduct();
-  
-    insertArticle(articleData);
+  const $itemTitle = document.getElementById("title");
+  $itemTitle.textContent = article.name;
+
+  const $itemPrice = document.getElementById("price");
+  $itemPrice.textContent = article.price;
+
+  const $itemDescription = document.getElementById("description");
+  $itemDescription.textContent = article.description;
+
+  const $colorsList = document.getElementById("colors");
+  for (let color of article.colors) {
+    const $itemColor = document.createElement("option");
+    $itemColor.setAttribute("value", `${color}`);
+    $itemColor.textContent = color;
+
+    $colorsList.appendChild($itemColor);
   }
-  
-  
+}
+
+/**
+ * Fonction compilant getOneProduct() et insertArticle()
+ */
+export async function main() {
+  const articleData = await getOneProduct();
+
+  insertArticle(articleData);
+}

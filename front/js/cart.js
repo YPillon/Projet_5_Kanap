@@ -1,16 +1,15 @@
 //----------------------------Partie affichage et gestion du panier--------------------------//
-import { main, calculatePrice,calculateItemsQuantity } from "./modules/cart.js";
 
-//On récupère le panier
-const panierRaw = localStorage.getItem("panier");
+import {
+  main,
+  calculatePrice,
+  calculateItemsQuantity,
+} from "./modules/cart.js";
 
-//On convertit le panier en tableau javascript
-const panierClean = JSON.parse(panierRaw);
+const panierClean = JSON.parse(localStorage.getItem("panier"));
 
-//
-//On crée une boucle pour récupérer les Id de chaque produit, leur couleur et leur quantité
-//et les insérer dans la page
-//
+//On crée une boucle pour récupérer les Id de chaque produit,
+//leur couleur et leur quantité et les insérer dans la page
 for (let articleInCart of panierClean) {
   main(articleInCart);
 }
@@ -20,18 +19,23 @@ calculateItemsQuantity();
 
 //--------------------------------Gestion du formulaire--------------------------------//
 
-import { isNameValid, isAddressValid, isCityValid, isEmailValid, createContact, putCartInAnArray, postFormData } from "./modules/cart.js";
+import {
+  isNameValid,
+  isAddressValid,
+  isCityValid,
+  isEmailValid,
+  createContact,
+  putCartInAnArray,
+  postFormData,
+} from "./modules/cart.js";
 
-//
-//
-//Regex
-
-//On sélectionne le bouton du formulaire
 const $orderBtn = document.getElementById("order");
 
-//On vise les champs "prénom" et "nom" du formulaire
 export const $firstNameInput = document.getElementById("firstName");
 export const $lastNameInput = document.getElementById("lastName");
+export const $addressInput = document.getElementById("address");
+export const $cityInput = document.getElementById("city");
+export const $emailInput = document.getElementById("email");
 
 //On ajoute la vérification lors du changement pour le prénom
 $firstNameInput.addEventListener("change", function (e) {
@@ -57,9 +61,6 @@ $lastNameInput.addEventListener("change", function (e) {
   }
 });
 
-//On vise le champ "adresse" du formulaire
-export const $addressInput = document.getElementById("address");
-
 //On ajoute la vérification lors du changement pour l'adresse
 $addressInput.addEventListener("change", function (e) {
   if (isAddressValid($addressInput.value) === false) {
@@ -71,9 +72,6 @@ $addressInput.addEventListener("change", function (e) {
     document.getElementById("addressErrorMsg").innerText = "";
   }
 });
-
-//On vise le champ "ville" du formulaire
-export const $cityInput = document.getElementById("city");
 
 //On ajoute la vérification lors du changement pour la ville
 $cityInput.addEventListener("change", function (e) {
@@ -87,10 +85,7 @@ $cityInput.addEventListener("change", function (e) {
   }
 });
 
-//On vise le champ email du formulaire
-export const $emailInput = document.getElementById("email");
-
-//On ajoute la vérification lors du changement
+//On ajoute la vérification lors du changement pour l'email
 $emailInput.addEventListener("change", function (e) {
   if (isEmailValid($emailInput.value) === false) {
     console.log(isEmailValid($emailInput.value));
@@ -114,7 +109,7 @@ $orderBtn.addEventListener("click", function (e) {
   ) {
     alert("Veuillez remplir tous les champs du formulaire");
   }
-  //Si un message d'erreur est affiché en-dessous d'un champ, 
+  //Si un message d'erreur est affiché en-dessous d'un champ,
   //on empêche le formulaire d'être envoyé
   if (
     document.getElementById("firstNameErrorMsg").innerText != "" ||
@@ -140,21 +135,15 @@ $orderBtn.addEventListener("click", function (e) {
     document.getElementById("cityErrorMsg").innerText == "" &&
     document.getElementById("emailErrorMsg").innerText == ""
   ) {
-    //On crée l'objet "contact"
     let contact = createContact();
     console.log(contact);
-
-    //On crée le tableau "products"
     let products = putCartInAnArray();
     console.log(products);
-
-    //On crée l'objet à envoyer rassemblant "contact" et "products"
     const aEnvoyer = {
       contact,
       products,
     };
 
-    //On poste la requête et on récupère la réponse
     postFormData(aEnvoyer);
   }
 });
