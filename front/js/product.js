@@ -1,5 +1,7 @@
 //----------------------------------Affichage du produit-----------------------------------//
 
+import { main } from "./modules/product.js";
+
 //On récupère l'URL de la page produit
 var str = window.location.href;
 
@@ -7,60 +9,8 @@ var str = window.location.href;
 var url = new URL(str);
 
 //On récupère la valeur de l'ID contenu dans l'URL
-var articleId = url.searchParams.get("id");
+export var articleId = url.searchParams.get("id");
 console.log("ID = " + articleId);
-
-//Création d'une fonction qui va récuérer les données produits liées à l'ID
-async function getOneProduct() {
-  return fetch(`http://localhost:3000/api/products/${articleId}`)
-    .then((res) => res.json())
-    .catch((err) => console.log("Erreur: " + err));
-}
-
-//
-//
-//Fonction insérant les éléments du produit par rapport aux données récupérées
-function insertArticle(article) {
-  //
-  //Insertion de l'image
-  const $itemImageContainer = document.querySelector(".item__img");
-  const $itemImage = document.createElement("img");
-  $itemImage.setAttribute("src", `${article.imageUrl}`);
-  $itemImage.setAttribute("alt", `${article.altTxt}`);
-  $itemImageContainer.appendChild($itemImage);
-
-  //Insertion du titre
-  const $itemTitle = document.getElementById("title");
-  $itemTitle.textContent = article.name;
-
-  //Insertion du prix
-  const $itemPrice = document.getElementById("price");
-  $itemPrice.textContent = article.price;
-
-  //Insertion de la description
-  const $itemDescription = document.getElementById("description");
-  $itemDescription.textContent = article.description;
-
-  //Insertion des couleurs dans le menu déroulant
-  const $colorsList = document.getElementById("colors");
-
-  for (color of article.colors) {
-    const $itemColor = document.createElement("option");
-    $itemColor.setAttribute("value", `${color}`);
-    $itemColor.textContent = color;
-
-    $colorsList.appendChild($itemColor);
-  }
-}
-
-//
-//
-//Fonction compilant la récupération et l'insertion des données
-async function main() {
-  const articleData = await getOneProduct();
-
-  insertArticle(articleData);
-}
 
 main();
 
