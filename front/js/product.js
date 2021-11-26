@@ -1,12 +1,6 @@
 //----------------------------------Affichage du produit-----------------------------------//
 
-import { main } from "./modules/product.js";
-
-//On récupère la valeur de l'ID contenu dans l'URL de la page
-var str = window.location.href;
-var url = new URL(str);
-export var articleId = url.searchParams.get("id");
-console.log("ID = " + articleId);
+import { main, articleId } from "./modules/product.js";
 
 main();
 
@@ -38,16 +32,19 @@ $addToCartBtn.addEventListener("click", function (e) {
   const recherche = panierClean.find(
     (article) => article.id === articleId && article.color === colorChoice
   );
+  console.log(recherche);
 
   //Si on n'a pas trouvé l'article avec find(), on rajoute un objet dans le tableau
   if (recherche === undefined) {
     console.log("Introuvable!");
-    if (
-      articleSelected.color === "" ||
-      articleSelected.quantity === "0" ||
-      parseInt(articleSelected.quantity, 10) > 100
+    if (articleSelected.color === "") {
+      alert("Veuillez sélectionner une couleur");
+    } else if (
+      (articleSelected.quantity === "0" ||
+        parseInt(articleSelected.quantity, 10) > 100) &&
+      articleSelected.color != ""
     ) {
-      alert("Veuillez sélectionner une couleur et une quantité entre 1 et 100");
+      alert("Veuillez sélectionner une quantité entre 1 et 100");
     } else {
       panierClean.push(articleSelected);
       console.log(panierClean);
@@ -64,12 +61,14 @@ $addToCartBtn.addEventListener("click", function (e) {
   //Si on a trouvé l'article, on met à jour la quantité
   else {
     console.log("trouvé!");
-    if (
-      articleSelected.color === "" ||
-      articleSelected.quantity === "0" ||
-      parseInt(articleSelected.quantity, 10) > 100
+    if (articleSelected.color === "") {
+      alert("Veuillez sélectionner une couleur");
+    } else if (
+      (articleSelected.quantity === "0" ||
+        parseInt(articleSelected.quantity, 10) > 100) &&
+      articleSelected.color != ""
     ) {
-      alert("Veuillez sélectionner une couleur et une quantité entre 1 et 100");
+      alert("Veuillez sélectionner une quantité entre 1 et 100");
     } else {
       if (recherche.quantity == "100") {
         alert("Vous ne pouvez commander que 100 articles de cette couleur");
@@ -79,9 +78,10 @@ $addToCartBtn.addEventListener("click", function (e) {
           parseInt(articleSelected.quantity, 10) +
           parseInt(recherche.quantity, 10)
         ).toString();
-        if (articleSelected.quantity > "100") {
+        console.log(articleSelected.quantity);
+        if (parseInt(articleSelected.quantity, 10) > 100) {
           articleSelected.quantity = "100";
-          alert("Vous ne pouvez commander que 100 articles de cette couleur");
+          //alert("Vous ne pouvez commander que 100 articles de cette couleur");
         }
         //On remplace l'ancienne quantité de l'article par la nouvelle
         Object.assign(recherche, articleSelected);

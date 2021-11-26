@@ -142,27 +142,30 @@ export function updateQuantity(e) {
  */
 export function deleteItem(e) {
   //On sélectionne le noeud parent possédant "data-id" et "data-color"
-  const produit = e.target.closest(".cart__item");
-  const idToDelete = produit.dataset.id;
-  const colorToDelete = produit.dataset.color;
 
-  const panierToUpdate = JSON.parse(localStorage.getItem("panier"));
+  if (window.confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
+    const produit = e.target.closest(".cart__item");
+    const idToDelete = produit.dataset.id;
+    const colorToDelete = produit.dataset.color;
 
-  const indexToDelete = panierToUpdate.findIndex(
-    (article) => article.id === idToDelete && article.color === colorToDelete
-  );
+    const panierToUpdate = JSON.parse(localStorage.getItem("panier"));
 
-  //On supprime l'élément
-  panierToUpdate.splice(indexToDelete, 1);
+    const indexToDelete = panierToUpdate.findIndex(
+      (article) => article.id === idToDelete && article.color === colorToDelete
+    );
 
-  localStorage.removeItem("panier");
-  localStorage.setItem("panier", JSON.stringify(panierToUpdate));
+    //On supprime l'élément
+    panierToUpdate.splice(indexToDelete, 1);
 
-  const $articlesContainer = document.getElementById("cart__items");
-  $articlesContainer.removeChild(produit);
+    localStorage.removeItem("panier");
+    localStorage.setItem("panier", JSON.stringify(panierToUpdate));
 
-  calculatePrice();
-  calculateItemsQuantity();
+    const $articlesContainer = document.getElementById("cart__items");
+    $articlesContainer.removeChild(produit);
+
+    calculatePrice();
+    calculateItemsQuantity();
+  }
 }
 
 /**
@@ -180,16 +183,21 @@ export async function main(articleInCart) {
 export async function calculatePrice() {
   const panier = JSON.parse(localStorage.getItem("panier"));
   let allArticlesPrice = 0;
+  const $totalPrice = document.getElementById("totalPrice");
 
   //Pour chaque article dans le panier, on additionne sa valeur au total
-  for (let item of panier) {
-    const articleData = await getOneProduct(item.id);
-    var articlePrice = articleData.price;
-    var articleTotalPrice = articlePrice * item.quantity;
-    allArticlesPrice += articleTotalPrice;
+  if (panier != null) {
+    for (let item of panier) {
+      const articleData = await getOneProduct(item.id);
+      var articlePrice = articleData.price;
+      var articleTotalPrice = articlePrice * item.quantity;
+      allArticlesPrice += articleTotalPrice;
+    }
+
+    $totalPrice.innerText = allArticlesPrice;
+  } else {
+    $totalPrice.innerText = 0;
   }
-  const $totalPrice = document.getElementById("totalPrice");
-  $totalPrice.innerText = allArticlesPrice;
 }
 
 /**
@@ -198,12 +206,18 @@ export async function calculatePrice() {
 export function calculateItemsQuantity() {
   const panier = JSON.parse(localStorage.getItem("panier"));
   let allArticlesQuantity = 0;
-
-  for (let item of panier) {
-    allArticlesQuantity += parseInt(item.quantity, 10);
-  }
   const $totalNumberOfArticles = document.getElementById("totalQuantity");
-  $totalNumberOfArticles.innerText = allArticlesQuantity;
+
+  if (panier != null) {
+    for (let item of panier) {
+      allArticlesQuantity += parseInt(item.quantity, 10);
+    }
+
+    $totalNumberOfArticles.innerText = allArticlesQuantity;
+  }
+  else {
+    $totalNumberOfArticles.innerText = 0;
+  }
 }
 
 //--------------------------------Gestion du formulaire--------------------------------//
@@ -246,13 +260,11 @@ export function isEmailValid(email) {
   );
 }
 
-import {
-  $firstNameInput,
-  $lastNameInput,
-  $addressInput,
-  $cityInput,
-  $emailInput,
-} from "../cart.js";
+const $firstNameInput = document.getElementById("firstName");
+const $lastNameInput = document.getElementById("lastName");
+const $addressInput = document.getElementById("address");
+const $cityInput = document.getElementById("city");
+const $emailInput = document.getElementById("email");
 
 /**
  * Crée un objet de contact à partir des données rentrées dans le formulaire
@@ -299,6 +311,7 @@ export function postFormData(objet) {
   })
     .then((res) => res.json())
     .then((res) => {
+      localStorage.clear();
       //Redirection vers la page de confirmation
       location.href = `./confirmation.html?orderId=${res.orderId}`;
     })

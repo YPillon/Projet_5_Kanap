@@ -1,4 +1,8 @@
-import { articleId } from "../product.js";
+//On récupère la valeur de l'ID contenu dans l'URL de la page
+let str = window.location.href;
+let url = new URL(str);
+export let articleId = url.searchParams.get("id");
+console.log("ID = " + articleId);
 
 /**
  * Cherche les données du produit dont

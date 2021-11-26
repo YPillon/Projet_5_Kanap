@@ -10,8 +10,10 @@ const panierClean = JSON.parse(localStorage.getItem("panier"));
 
 //On crée une boucle pour récupérer les Id de chaque produit,
 //leur couleur et leur quantité et les insérer dans la page
-for (let articleInCart of panierClean) {
-  main(articleInCart);
+if (panierClean != null) {
+  for (let articleInCart of panierClean) {
+    main(articleInCart);
+  }
 }
 
 calculatePrice();
@@ -31,11 +33,11 @@ import {
 
 const $orderBtn = document.getElementById("order");
 
-export const $firstNameInput = document.getElementById("firstName");
-export const $lastNameInput = document.getElementById("lastName");
-export const $addressInput = document.getElementById("address");
-export const $cityInput = document.getElementById("city");
-export const $emailInput = document.getElementById("email");
+const $firstNameInput = document.getElementById("firstName");
+const $lastNameInput = document.getElementById("lastName");
+const $addressInput = document.getElementById("address");
+const $cityInput = document.getElementById("city");
+const $emailInput = document.getElementById("email");
 
 //On ajoute la vérification lors du changement pour le prénom
 $firstNameInput.addEventListener("change", function (e) {
@@ -99,8 +101,11 @@ $emailInput.addEventListener("change", function (e) {
 //Au clic sur le bouton "commander!" on déclenche le code suivant
 $orderBtn.addEventListener("click", function (e) {
   e.preventDefault();
+  if (document.getElementById("totalQuantity").innerText == 0) {
+    alert("Votre panier est vide !");
+  }
   //On vérifie que tous les champs du formulaire sont remplis
-  if (
+  else if (
     $firstNameInput.value == "" ||
     $lastNameInput.value == "" ||
     $addressInput.value == "" ||
@@ -111,7 +116,7 @@ $orderBtn.addEventListener("click", function (e) {
   }
   //Si un message d'erreur est affiché en-dessous d'un champ,
   //on empêche le formulaire d'être envoyé
-  if (
+  else if (
     document.getElementById("firstNameErrorMsg").innerText != "" ||
     document.getElementById("lastNameErrorMsg").innerText != "" ||
     document.getElementById("addressErrorMsg").innerText != "" ||
@@ -123,7 +128,7 @@ $orderBtn.addEventListener("click", function (e) {
     );
   }
   //Si tout est rempli correctement, on envoie le formulaire à l'API
-  if (
+  else if (
     $firstNameInput.value != "" &&
     $lastNameInput.value != "" &&
     $addressInput.value != "" &&
